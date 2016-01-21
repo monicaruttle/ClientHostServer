@@ -16,6 +16,7 @@ public class Client {
 	static int WRITE = 0x02;
 	
 	public static void main(String args[]){
+		//create the client and begin the program
 		Client c = new Client();
 		c.initializeSockets();
 		c.loop();
@@ -23,6 +24,7 @@ public class Client {
 	
 	public void initializeSockets(){
 		try {
+			//initialize the socket to communicate with the host
 			ds = new DatagramSocket();
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
@@ -32,10 +34,11 @@ public class Client {
 	}
 	
 	public void loop(){
+		//loop 11 times. If the n-th loop is even, it is a read request. If it's odd, it's a write request. If it's the 11th loop, it's an invalid request.
 		for (int i = 0; i < 11; i++){
-			System.out.println("Request " + i+1);
+			System.out.println("Request " + (i+1));
 			if (i == 10)
-				createInvalid();
+				sendInvalid();
 			else if ((i % 2) == 0){
 				sendRead();
 				receivePacket();
@@ -45,14 +48,17 @@ public class Client {
 			}
 			System.out.println();
 		}
+		ds.close();
 	}
 	
 	public void sendRead(){
+		//generate the read message
 		byte[] message = Converter.convertToBytes(READ);
 		
 		System.out.println("Byte representation of read at client to send to host: " + Arrays.toString(message));
 		System.out.println("String representation of read at client to send to host: " + Converter.convertToString(message));
 		
+		//send a datagram packet to the host on port 68 with the generated read message
 		try {
 			dpSend = new DatagramPacket(message, message.length, InetAddress.getLocalHost(), 68);
 			ds.send(dpSend);
@@ -66,11 +72,13 @@ public class Client {
 	}
 	
 	public void sendWrite(){
+		//generate the write request
 		byte[] message = Converter.convertToBytes(WRITE);
 		
 		System.out.println("Byte representation of write at client to send to host: " + Arrays.toString(message));
 		System.out.println("String representation of write at client to send to host: " + Converter.convertToString(message));
 		
+		//send a datagram packet to the host on port 68 with the generate write message
 		try {
 			dpSend = new DatagramPacket(message, message.length, InetAddress.getLocalHost(), 68);
 			ds.send(dpSend);
@@ -84,6 +92,7 @@ public class Client {
 	}
 	
 	public void receivePacket(){
+		//receive a datagram packet from the host
 		byte data[] = new byte[100];
 	    dpReceive = new DatagramPacket(data, data.length);
 
@@ -94,11 +103,26 @@ public class Client {
 	    	 System.exit(1);
 	     }
 	     
+	     System.out.println();
 	     System.out.println("Message from received packet at client from host: " + Arrays.toString(data));
 	}
 	
-	public void createInvalid(){
+	public void sendInvalid(){
+		byte[] message = {0, 0, 0, 0};
 		
+		System.out.println("Sending the invalid message: " + Arrays.toString(message));
+		
+		//send a datagram packet to the host on port 68 with the generate write message
+		try {
+			dpSend = new DatagramPacket(message, message.length, InetAddress.getLocalHost(), 68);
+			ds.send(dpSend);
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

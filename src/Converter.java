@@ -8,6 +8,7 @@ public abstract class Converter {
 	static String DATA = "test.txt";
 	static String MODE = "octet";
 
+	//generate the read or write message in a byte array
 	public static byte[] convertToBytes(int readOrWrite){
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		
@@ -38,6 +39,7 @@ public abstract class Converter {
 		return output.toByteArray();
 	}
 	
+	//convert a byte array to a string
 	public static String convertToString(byte[] message){
 		
 		byte[] data;

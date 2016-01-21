@@ -14,12 +14,14 @@ public class Server {
 	private byte response[];
 
 	public static void main(String[] args) {
+		//create the server and begin the program
 		Server s = new Server();
 		s.initializeSockets();
 		s.loop();
 	}
 	
 	public void initializeSockets(){
+		//initialize the socket used to communicate with the host
 		try {
 			dsReceive = new DatagramSocket(69);
 		} catch (SocketException e) {
@@ -29,6 +31,7 @@ public class Server {
 	}
 	
 	public void loop(){
+		//the program will receive from the host and send back to the host
 		int i = 1;
 		while (true){
 			System.out.println("Request " + i);
@@ -40,10 +43,9 @@ public class Server {
 	}
 	
 	public void receiveFromHost(){
+		//receive a datagram packet from the host
 		byte data[] = new byte[100];
 		dpReceive = new DatagramPacket(data, data.length);
-		
-		//the data without the following 0's
 		
 		try {
 			dsReceive.receive(dpReceive);
@@ -51,10 +53,14 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		//the data without the following 0's
 		byte[] messageArray = Arrays.copyOfRange(dpReceive.getData(), 0, dpReceive.getLength());
 		
+		//a string representation of the received message
 		String message = Arrays.toString(dpReceive.getData());
 		
+		//check if the message was a read. If so, print what was received and create a message [0, 3, 0, 1].
 		if (checkIfRead(messageArray)){
 			
 			//read request
@@ -74,6 +80,8 @@ public class Server {
 			output.write(0x01);
 			
 			response = output.toByteArray();
+		
+		//check if the message was a write. If so, print was what received and create a message [0, 4, 0, 0].
 		} else if (checkIfWrite(messageArray)){
 			//write request
 			
@@ -98,6 +106,7 @@ public class Server {
 	}
 	
 	public void sendToHost(){
+		//create the datagram packet with the newly created message and send to the host.
 		try {
 			dsSend = new DatagramSocket();
 		} catch (SocketException e) {
@@ -124,6 +133,7 @@ public class Server {
 		dsSend.close();
 	}
 	
+	//varify if the message is a valid read
 	public boolean checkIfRead(byte[] message){
 		if (message[0] == 0 && message[1] == 1){
 			int i = 2;
@@ -140,6 +150,7 @@ public class Server {
 		} else return false;
 	}
 	
+	//varify if the message is a valid write
 	public boolean checkIfWrite(byte[] message){
 		if (message[0] == 0 && message[1] == 2){
 			int i = 2;
