@@ -5,8 +5,8 @@ import java.util.Arrays;
 
 public abstract class Converter {
 	
-	static String DATA = "test.txt";
-	static String MODE = "octet";
+	private static String DATA = "test.txt";
+	private static String MODE = "octet";
 
 	//generate the read or write message in a byte array
 	public static byte[] convertToBytes(int readOrWrite){

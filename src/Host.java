@@ -8,8 +8,8 @@ import java.util.Arrays;
 
 public class Host {
 	
-	DatagramSocket dsReceive, dsSendAndReceive;
-	DatagramPacket dpReceiveFromClient, dpSendToServer, dpReceiveFromServer, dpSendToClient;
+	private DatagramSocket dsReceive, dsSendAndReceive, dsSend;
+	private DatagramPacket dpReceiveFromClient, dpSendToServer, dpReceiveFromServer, dpSendToClient;
 	
 	public static void main(String args[]){
 		//create the host and being the program
@@ -102,7 +102,7 @@ public class Host {
 		byte[] responseArray = Arrays.copyOfRange(dpReceiveFromServer.getData(), 0, dpReceiveFromServer.getLength());
 		
 		try {
-			DatagramSocket dsSend = new DatagramSocket();
+			dsSend = new DatagramSocket();
 			dpSendToClient = new DatagramPacket(responseArray, dpReceiveFromServer.getLength(), InetAddress.getLocalHost(), dpReceiveFromClient.getPort());
 			
 			System.out.println("Response to send to client at host: " + Arrays.toString(responseArray));

@@ -12,8 +12,8 @@ public class Client {
 	
 	private DatagramSocket ds;
 	private DatagramPacket dpSend, dpReceive;
-	static int READ = 0x01;
-	static int WRITE = 0x02;
+	private static int READ = 0x01;
+	private static int WRITE = 0x02;
 	
 	public static void main(String args[]){
 		//create the client and begin the program
